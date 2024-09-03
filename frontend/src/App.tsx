@@ -25,6 +25,7 @@ function App() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const { control, handleSubmit, reset } = useForm();
 
   useEffect(() => {
@@ -43,7 +44,7 @@ function App() {
   };
 
   const onSubmit = async (data: any) => {
-    setLoading(true);
+    setSubmitting(true);
     try {
       await backend.createPost(data.title, data.body, data.author);
       reset();
@@ -52,7 +53,7 @@ function App() {
     } catch (error) {
       console.error('Error creating post:', error);
     }
-    setLoading(false);
+    setSubmitting(false);
   };
 
   return (
@@ -116,8 +117,14 @@ function App() {
               </div>
             )}
           />
-          <Button type="submit" variant="contained" color="primary">
+          <Button 
+            type="submit" 
+            variant="contained" 
+            style={{ backgroundColor: '#FFEB3B', color: '#000' }}
+            disabled={submitting}
+          >
             Submit Post
+            {submitting && <CircularProgress size={24} style={{ marginLeft: 10 }} />}
           </Button>
         </form>
       )}
